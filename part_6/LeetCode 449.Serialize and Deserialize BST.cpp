@@ -11,45 +11,43 @@ struct TreeNode {
 
 #include <string>
 #include <vector>
+using namespace std;
 
 void BST_insert(TreeNode *node, TreeNode *insert_node){
-	if (insert_node->val < node->val){
-		if (node->left){
+	if(!node||!insert_node)
+		return;
+	if(node->val > insert_node->val){
+		if(node->left){
 			BST_insert(node->left, insert_node);
-		}
-		else{
+		}else{
 			node->left = insert_node;
 		}
-	}
-	else{
-		if (node->right){
+	}else{
+		if(node->right){
 			BST_insert(node->right, insert_node);
-		}
-		else{
+		}else{
 			node->right = insert_node;
 		}
 	}
 }
 
 void change_int_to_string(int val, std::string &str_val){
-	std::string tmp;
+	string tmp;
 	while(val){
-		tmp += val % 10 + '0';
-		val = val / 10;
+		tmp.push_back(val%10+'0');
+		val = val/10;
 	}
-	for (int i = tmp.length() - 1; i >= 0; i--){
-		str_val += tmp[i];
+	for(int i = tmp.size()-1; i >= 0; --i){
+		str_val.push_back(tmp[i]);
 	}
-	str_val += '#';
+	str_val.push_back('#');
 }
 
 void BST_preorder(TreeNode *node, std::string &data){
-	if (!node){
-		return;
-	}
-	std::string str_val;
-	change_int_to_string(node->val, str_val);
-	data += str_val;
+	if(!node)
+		return ;
+	int val = node->val;
+	change_int_to_string(val, data);
 	BST_preorder(node->left, data);
 	BST_preorder(node->right, data);
 }
@@ -62,37 +60,29 @@ public:
         return data;
     }
     TreeNode *deserialize(std::string data) {
-    	if (data.length() == 0){
-	    	return NULL;
-	    }
-    	std::vector<TreeNode *> node_vec;
-    	int val = 0;
-    	for (int i = 0; i < data.length(); i++){
-	    	if (data[i] == '#'){
-	    		node_vec.push_back(new TreeNode(val));
-	    		val = 0;
-	    	}
-	    	else{
-	    		val = val * 10 + data[i] - '0';
-	    	}
-	    }
-	    for (int i = 1; i < node_vec.size(); i++){
-    		BST_insert(node_vec[0], node_vec[i]);
-    	}
-    	return node_vec[0];
+		vector<TreeNode*> tree_vec;
+		int val = 0;
+		for(int i = 0; i < data.size(); ++i){
+			if(data[i] == '#'){
+				tree_vec.push_back(new TreeNode(val));
+				val = 0;
+			}else{
+				val = 10*val + (data[i] - '0');
+			}
+		}
+		for(int i = 1; i < tree_vec.size(); ++i){
+			BST_insert(tree_vec[0], tree_vec[i]);
+		}
+		return tree_vec[0];
     }
 };
 
 void preorder_print(TreeNode *node,int layer){
-	if (!node){
+	if(!node)
 		return;
-	}
-	for (int i = 0; i < layer; i++){
-		printf("-----");
-	}
-	printf("[%d]\n", node->val);
-	preorder_print(node->left, layer + 1);
-	preorder_print(node->right, layer + 1);
+	printf("node-> %d-------layer: %d\n", node->val, layer);
+	preorder_print(node->left, layer+1);
+	preorder_print(node->right, layer+1);
 }
 
 int main(){

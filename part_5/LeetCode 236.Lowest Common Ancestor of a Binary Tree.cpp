@@ -15,45 +15,47 @@ void preorder(TreeNode* node,
 			  TreeNode *search,
 		   	  std::vector<TreeNode*> &path,
 		   	  std::vector<TreeNode*> &result,
-			  int &finish){
-	if (!node || finish){
-		return;
-	}
-	path.push_back(node);
-	if (node == search){
-		finish = 1;
-		result = path;
-	}
-	preorder(node->left, search, path, result, finish);
-	preorder(node->right, search, path, result, finish);
-	path.pop_back();
+			  int finish){
+				  if(finish || !node){
+					  return;
+				  }
+				  path.push_back(node);
+				  if(node == search){
+					  result = path;
+					  finish = 1;
+				  }
+				preorder(node->left, search, path, result, finish);
+				preorder(node->right, search, path, result, finish);
+				path.pop_back();
 }
 
 class Solution {
 public:
     TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-        std::vector<TreeNode*> path;
-        std::vector<TreeNode*> node_p_path;
-        std::vector<TreeNode*> node_q_path;
-        int finish = 0;
-        preorder(root, p, path, node_p_path, finish);
-        path.clear();
-        finish = 0;
-        preorder(root, q, path, node_q_path, finish);        
-        int path_len = 0;
-        if (node_p_path.size() < node_q_path.size()){
-        	path_len = node_p_path.size();
-        }
-        else{
-        	path_len = node_q_path.size();
-        }
-        TreeNode *result = 0;
-        for (int i = 0; i < path_len; i++){
-        	if (node_p_path[i] == node_q_path[i]){
-	        	result = node_p_path[i];
-	        }
-        }
-        return result;
+		std::vector<TreeNode*> vec_p;
+		std::vector<TreeNode*> vec_q;
+		std::vector<TreeNode*> path;
+		preorder(root, p, path, vec_p, 0);
+		path.clear();
+		preorder(root, q, path, vec_q, 0);
+		int p_len = 0;
+		int q_len = 0;
+		TreeNode* result = NULL;
+		while(p_len < vec_p.size() && q_len < vec_q.size()){
+			if(vec_q[q_len] == vec_p[p_len]){
+				if(q_len+1 == vec_q.size() || p_len+1 == vec_p.size()){
+					result = vec_p[p_len];
+					break;
+				}
+				if(vec_p[p_len+1] != vec_q[q_len+1]){
+					result = vec_q[q_len];
+					break;
+				}
+			}
+			++q_len;
+			++p_len;
+		}
+		return result;
     }
 };
 

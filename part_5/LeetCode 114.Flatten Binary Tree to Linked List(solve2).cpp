@@ -15,29 +15,28 @@ public:
     }
 private:
 	void preorder(TreeNode *node, TreeNode *&last){
-		if (!node){
+		if(!node)
 			return;
-		}
-		if (!node->left && !node->right){
+		if(!node->left && !node->right){
 			last = node;
 			return;
 		}
-		TreeNode *left = node->left;
-		TreeNode *right = node->right;
-		TreeNode *left_last = NULL;
-		TreeNode *right_last = NULL;
-		if (left){
+		TreeNode* left = node->left;
+		TreeNode* right = node->right;
+		TreeNode* left_last = NULL;
+		TreeNode* right_last = NULL;
+		if(left){
 			preorder(left, left_last);
 			node->left = NULL;
 			node->right = left;
 			last = left_last;
 		}
-		if (right){
+		if(right){
 			preorder(right, right_last);
-			if (left_last){
-				left_last->right = right;
+			if(last){
+				last->right = right;
+				last = right_last;
 			}
-			last = right_last;
 		}
 	}
 };

@@ -13,29 +13,31 @@ struct TreeNode {
 class Solution {
 public:
     std::vector<int> rightSideView(TreeNode* root) {
-        std::vector<int> view;
-    	std::queue<std::pair<TreeNode *, int> > Q;
-    	if (root){
-	    	Q.push(std::make_pair(root, 0));
-	    }
-    	while(!Q.empty()){
-	    	TreeNode *node = Q.front().first;
-	    	int depth = Q.front().second;
-	    	Q.pop();
-	    	if (view.size() == depth){
-	    		view.push_back(node->val);
-	    	}
-	    	else{
-	    		view[depth] = node->val;
-	    	}
-	    	if (node->left){
-	    		Q.push(std::make_pair(node->left, depth + 1));
-	    	}
-	    	if (node->right){
-	    		Q.push(std::make_pair(node->right, depth + 1));
-	    	}
-	    }
-    	return view;
+		std::vector<int> views;
+		std::queue<TreeNode*> Q;
+		if(!root){
+			return views;
+		}
+		Q.push(root);
+		Q.push(NULL);
+		int layer_view = -1;
+		while(Q.size() > 1){
+			TreeNode* item = Q.front();
+			Q.pop();
+			if(item == NULL){
+				views.push_back(layer_view);
+				layer_view = -1;
+				Q.push(NULL);
+			}else{
+				layer_view = item->val;
+				if(item->left)
+					Q.push(item->left);
+				if(item->right)
+					Q.push(item->right);
+			}
+		}
+		views.push_back(layer_view);
+		return views;
     }
 };
 

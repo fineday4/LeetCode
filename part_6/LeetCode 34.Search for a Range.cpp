@@ -3,42 +3,38 @@
 #include <vector>
 
 int left_bound(std::vector<int>& nums, int target){
-	int begin = 0;
-	int end = nums.size() - 1;
-	while(begin <= end){
-		int mid = (begin + end) / 2;
-		if (target == nums[mid]){
-			if (mid == 0 || nums[mid -1] < target){
+	int beg = 0;
+	int end = nums.size()-1;
+	while(beg <= end){
+		int mid = (beg+end)/2;
+		if(nums[mid] == target){
+			if(mid == 0 || nums[mid-1] < target){
 				return mid;
 			}
-			end = mid - 1;
-		}
-		else if (target < nums[mid]){
-			end = mid - 1;
-		}
-		else if (target > nums[mid]){
-			begin = mid + 1;
+			end = mid-1;
+		}else if(nums[mid] < target){
+			beg = mid+1;
+		}else{
+			end = mid-1;
 		}
 	}
 	return -1;
 }
 
 int right_bound(std::vector<int>& nums, int target){
-	int begin = 0;
-	int end = nums.size() - 1;
-	while(begin <= end){
-		int mid = (begin + end) / 2;
-		if (target == nums[mid]){
-			if (mid == nums.size() - 1 || nums[mid + 1] > target){
+	int beg = 0;
+	int end = nums.size()-1;
+	while(beg <= end){
+		int mid = (beg+end)/2;
+		if(nums[mid] == target){
+			if(mid == nums.size()-1 || nums[mid+1] > target){
 				return mid;
 			}
-			begin = mid + 1;
-		}
-		else if (target < nums[mid]){
-			end = mid - 1;
-		}
-		else if (target > nums[mid]){
-			begin = mid + 1;
+			beg = mid+1;
+		}else if(nums[mid] < target){
+			beg = mid+1;
+		}else{
+			end = mid-1;
 		}
 	}
 	return -1;

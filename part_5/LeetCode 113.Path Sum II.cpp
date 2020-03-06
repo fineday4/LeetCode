@@ -21,18 +21,18 @@ private:
 	void preorder(TreeNode *node, int &path_value, int sum,
 				std::vector<int> &path,
 				std::vector<std::vector<int> > &result){
-		if (!node){
-			return;
-		}
-		path_value += node->val;
-		path.push_back(node->val);
-		if (!node->left && !node->right && path_value == sum){
-			result.push_back(path);
-		}
-		preorder(node->left, path_value, sum, path, result);
-		preorder(node->right, path_value, sum, path, result);
-		path_value -= node->val;
-		path.pop_back();
+					if(!node)
+						return;
+					path_value += node->val;
+					path.push_back(node->val);
+					if(!node->left && !node->right && path_value == sum){
+						result.push_back(path);
+					}else{
+						preorder(node->left, path_value, sum, path, result);//递归遍历左子树
+						preorder(node->right, path_value, sum, path, result);//递归遍历右子树
+						path_value -= node->val;//这个节点处理完后需要删除（减去）此节点才可以回退到上一个节点的状态
+						path.pop_back();
+					}
 	}
 };
 

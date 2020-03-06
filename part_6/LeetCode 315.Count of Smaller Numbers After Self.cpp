@@ -10,22 +10,21 @@ struct BSTNode {
 };
 
 void BST_insert(BSTNode *node, BSTNode *insert_node, int &count_small){
-	if (insert_node->val <= node->val){
-		node->count++;
-		if (node->left){
-			BST_insert(node->left, insert_node, count_small);
-		}
-		else{
-			node->left = insert_node;
-		}
-	}
-	else{
+	if(!node || !insert_node)
+		return;
+	if(node->val <= insert_node->val){
 		count_small += node->count + 1;
-		if (node->right){
+		if(node->right){
 			BST_insert(node->right, insert_node, count_small);
-		}
-		else{
+		}else{
 			node->right = insert_node;
+		}
+	}else{
+		++(node->count);
+		if(node->left){
+			BST_insert(node->left, insert_node, count_small);
+		}else{
+			node->left = insert_node;
 		}
 	}
 }
@@ -33,23 +32,17 @@ void BST_insert(BSTNode *node, BSTNode *insert_node, int &count_small){
 class Solution {
 public:
     std::vector<int> countSmaller(std::vector<int>& nums) {
-    	std::vector<int> result;
-    	std::vector<BSTNode *> node_vec;
-    	std::vector<int> count;
-    	for (int i = nums.size() - 1; i >= 0; i--){
-    		node_vec.push_back(new BSTNode(nums[i]));
-	    }
-	    count.push_back(0);
-	    for (int i = 1; i < node_vec.size(); i++){
-	    	int count_small = 0;
-    		BST_insert(node_vec[0], node_vec[i], count_small);
-    		count.push_back(count_small);
-    	}
-        for (int i = node_vec.size() - 1; i >= 0; i--){
-        	delete node_vec[i];
-        	result.push_back(count[i]);
-        }
-        return result;
+		std::vector<int> res(nums.size(), 0);
+		std::vector<BSTNode*> vec_tree;
+		for(int i = nums.size()-1; i >= 0; --i){
+			vec_tree.push_back(new BSTNode(nums[i]));
+		}
+		for(int i = 1; i < vec_tree.size(); ++i){
+			int tmp = 0;
+			BST_insert(vec_tree[0], vec_tree[i], tmp);
+			res[vec_tree.size()-i-1] = tmp;
+		}
+		return res;
     }
 };
 
