@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <vector>
+using namespace std;
 
 bool cmp(const std::pair<int, int> &a, const std::pair<int ,int> &b) {
     return a.first < b.first;
@@ -10,27 +11,25 @@ bool cmp(const std::pair<int, int> &a, const std::pair<int ,int> &b) {
 class Solution {
 public:
     int findMinArrowShots(std::vector<std::pair<int, int> >& points) {
-    	if (points.size() == 0){
-	    	return 0;
-	    }
-    	std::sort(points.begin(), points.end(), cmp);
-    	int shoot_num = 1;
-    	int shoot_begin = points[0].first;
-    	int shoot_end = points[0].second;
-    	for (int i = 1; i < points.size(); i++){
-	    	if (points[i].first <= shoot_end){
-	    		shoot_begin = points[i].first;
-    			if (shoot_end > points[i].second){
-			    	shoot_end = points[i].second;
-			    }
-	    	}
-	    	else{
-	    		shoot_num++;
-	    		shoot_begin = points[i].first;
-	    		shoot_end = points[i].second;
-	    	}
-	    }
-	    return shoot_num;
+		if(points.size() <= 1){
+			return points.size();
+		}
+		sort(points.begin(), points.end(), cmp);
+		int arrow_num = 1;
+		int beg = points[0].first;
+		int end = points[0].second;
+		for(int idx = 1; idx < points.size(); ++idx){
+			if(end >= points[idx].first && points[idx].first >= beg){
+				if(end > points[idx].second)
+					end = points[idx].second;
+				beg = points[idx].first;
+			}else{
+				beg = points[idx].first;
+				end = points[idx].second;
+				++arrow_num;
+			}
+		}	
+		return arrow_num;	
     }
 };
 

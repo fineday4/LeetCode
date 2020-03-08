@@ -4,22 +4,28 @@
 class Solution {
 public:
     int jump(std::vector<int>& nums) {
-    	if (nums.size() < 2){
-	    	return 0;
-	    }
-        int current_max_index = nums[0];
-        int pre_max_max_index = nums[0];
-        int jump_min = 1;
-        for (int i = 1; i < nums.size(); i++){
-        	if (i > current_max_index){
-        		jump_min++;
-	        	current_max_index = pre_max_max_index;
-	        }
-        	if (pre_max_max_index < nums[i] + i){
-       			pre_max_max_index = nums[i] + i;
-        	}
-        }
-        return jump_min;
+		if(nums.size() < 2){
+			return nums.size();
+		}
+		int min_jump = 1;
+		int l_max_len = nums[0];
+		int r_max_len = l_max_len;
+		for(int idx = 1; idx < nums.size(); ++idx){
+			if(idx > l_max_len){
+				l_max_len = r_max_len;
+				++min_jump;
+				--idx;
+			}else{
+				if(r_max_len < nums[idx] + idx){
+					r_max_len = nums[idx] + idx;
+				}
+			}
+
+		}
+		if(l_max_len < nums.size()-1){
+			min_jump = -1;
+		}
+		return min_jump;
     }
 };
 
