@@ -1,6 +1,8 @@
 #include <stdio.h>
-
+#include <iostream>
 #include <vector>
+
+using namespace std;
 
 void build_segment_tree(std::vector<int> &value,
 			std::vector<int> &nums,
@@ -31,10 +33,27 @@ int sum_range_segment_tree(std::vector<int> &value,
 						right, qleft, qright);
 }
 
+void update_segment_tree(std::vector<int> &seg_tree, int seg_pos, int left, int right, int pos, int value){
+	if(left == right && left == pos){
+		cout << "seg_pos: " << seg_pos << endl;
+		seg_tree[seg_pos] = value;
+		return ;
+	}
+	int mid = (left + right)/2;
+	if(mid >= pos){
+		update_segment_tree(seg_tree, 2*seg_pos + 1, left, mid,  pos, value);
+	}else{
+		update_segment_tree(seg_tree, 2*seg_pos + 2, mid+1, right, pos, value);
+	}
+	seg_tree[seg_pos] = seg_tree[seg_pos*2 + 1] + seg_tree[seg_pos*2+2];
+}
+
+#if 0
 void update_segment_tree(std::vector<int> &value,
 						 int pos, int left, int right,
 						 int index, int new_value){
 	if (left == right && left == index){
+		cout << "pos: " << pos << endl;
 		value[pos] = new_value;
 		return;
 	}
@@ -49,7 +68,7 @@ void update_segment_tree(std::vector<int> &value,
 	}
 	value[pos] = value[pos * 2 + 1] + value[pos * 2 + 2];
 }
-
+#endif
 class NumArray {
 public:
     NumArray(std::vector<int> nums) {
