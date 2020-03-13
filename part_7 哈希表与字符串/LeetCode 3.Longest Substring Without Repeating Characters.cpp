@@ -1,33 +1,28 @@
 #include <stdio.h>
-
+#include <vector>
 #include <string>
+#include <algorithm>
+
+using namespace std;
+
 class Solution {
 public:
     int lengthOfLongestSubstring(std::string s) {
-    	int begin = 0;
-    	int result = 0;
-    	std::string word = "";
-    	int char_map[128] = {0};
-    	for (int i = 0; i < s.length(); i++){
-    		char_map[s[i]]++;
-    		if (char_map[s[i]] == 1){
-		    	word += s[i];
-		    	if (result < word.length()){
-	    			result = word.length();
-	    		}
-		    }
-		    else{
-    			while(begin < i && char_map[s[i]] > 1){
-    				char_map[s[begin]]--;
-		    		begin++;
-		    	}
-		    	word = "";
-		    	for (int j = begin; j <= i; j++){
-	    			word += s[j];
-	    		}
-    		}
-	    }
-    	return result;
+		int max_length = 0;
+		vector<char> queue;
+		//! 不错的实现
+		for(int i = 0; i < s.size(); ++i){
+			auto it_find = find(queue.begin(), queue.end(), s[i]);
+			if(it_find == queue.end()){
+				if(queue.size() >= max_length)
+					++max_length;
+				queue.push_back(s[i]);
+			}else{
+					queue.erase(queue.begin(), it_find + 1);
+					queue.push_back(s[i]);
+			}
+		}
+		return max_length;
     }
 };
 

@@ -4,27 +4,24 @@
 #include <string>
 #include <map>
 
+using namespace std;
+
 class Solution {
 public:
     std::vector<std::string> findRepeatedDnaSequences(std::string s) {
-    	std::map<std::string, int> word_map;
-    	std::vector<std::string> result;
-    	for (int i = 0; i < s.length(); i++){
-    		std::string word = s.substr(i, 10);
-	    	if (word_map.find(word) != word_map.end()){
-	    		word_map[word] += 1;
-	    	}
-	    	else{
-	    		word_map[word] = 1;
-	    	}
-	    }
-	    std::map<std::string, int> ::iterator it;
-	    for (it = word_map.begin(); it != word_map.end(); it++){
-    		if (it->second > 1){
-		    	result.push_back(it->first);
-		    }
-    	}
-    	return result;
+		map<string, int> str_hash;
+		vector<string> result;
+		if(s.size() < 10)
+			return result;
+		for(int i = 0; i < s.size()-9; ++i){
+			string tmp = s.substr(i, 10);
+			++str_hash[tmp];
+		}
+		for(auto i : str_hash){
+			if(i.second > 1)
+				result.push_back(i.first);
+		}
+		return result;
     }
 };
 

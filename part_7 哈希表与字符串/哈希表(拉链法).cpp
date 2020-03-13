@@ -2,17 +2,22 @@
 #include <stdio.h>
 #include <vector>
 
+using namespace std;
+
 struct ListNode {
 	int val;
 	ListNode *next;
-	ListNode(int x) : val(x), next(NULL) {}
+	ListNode(int _val):val(_val), next(NULL){}
 };
 
 int hash_func(int key, int table_len){
-	return key % table_len;
+	return key%table_len;
 }
 
-void insert(ListNode *hash_table[], ListNode *node, int table_len){
+void insert(ListNode* hash_table[], ListNode *node, int table_len){
+	if(!node)
+		return ;
+
 	int hash_key = hash_func(node->val, table_len);
 	node->next = hash_table[hash_key];
 	hash_table[hash_key] = node;
@@ -20,12 +25,11 @@ void insert(ListNode *hash_table[], ListNode *node, int table_len){
 
 bool search(ListNode *hash_table[], int value, int table_len){
 	int hash_key = hash_func(value, table_len);
-	ListNode *head = hash_table[hash_key];
-	while(head){
-		if (head->val == value){
+	ListNode* tmp = hash_table[hash_key];
+	while(tmp){
+		if(tmp->val == value)
 			return true;
-		}
-		head = head->next;
+		tmp = tmp->next;
 	}
 	return false;
 }
@@ -55,10 +59,10 @@ int main(){
 	printf("Test search:\n");
 	for (int i = 0; i < 10; i++){
 		if (search(hash_table, i, TABLE_LEN)){
-			printf("%d is in the hash table.\n");
+			printf("%d is in the hash table.\n", i);
 		}
 		else{
-			printf("%d is not in the hash table.\n");
+			printf("%d is not in the hash table.\n", i);
 		}
 	}
 	return 0;
