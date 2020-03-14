@@ -32,11 +32,10 @@ private:
     bool generate(int idx, int target, vector<int> &nums, int buckets[4]){
         if(idx >= nums.size())
             return buckets[0] == buckets[1] && buckets[1] == buckets[2] && buckets[2] == buckets[3];
-        
+
         for(int j = 0; j < 4; ++j){
-            if(nums[idx] + buckets[j] > target){
+            if(buckets[j]+nums[idx] > target)
                 continue;
-            }
             buckets[j] += nums[idx];
             if(generate(idx+1, target, nums, buckets)){
                 return true;
@@ -46,3 +45,12 @@ private:
         return false;
     }
 };
+
+int main()
+{
+    vector<int> test1 = {1,1,2,2,2};
+    Solution sol;
+    cout << "result: " << sol.makesquare(test1) << endl;
+
+    return 0;
+}

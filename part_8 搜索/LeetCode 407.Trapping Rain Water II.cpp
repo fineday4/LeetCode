@@ -29,27 +29,28 @@ struct cmp{
 class Solution {
 public:
     int trapRainWater(vector<vector<int>>& heightMap) {
-        if(heightMap.size() < 3 || heightMap[0].size() < 3){
+        if(heightMap.size() < 3 || heightMap[0].size() < 3)
             return 0;
-        }
+
         int raw = heightMap.size();
         int column = heightMap[0].size();
-        vector<vector<int>> mark(raw, vector<int>(column, 0));
+        vector<vector<int> > mark(raw, vector<int>(column,0));
         priority_queue<Qitem, vector<Qitem>, cmp> Q;
-        for(int i = 0; i < heightMap[0].size(); ++i){
-            Q.push(Qitem(0, i, heightMap[0][i]));
-            Q.push(Qitem(raw-1, i, heightMap[raw-1][i]));
-            mark[0][i] = 1;
-            mark[raw-1][i] = 1;
-        }
-        for(int i = 1; i < heightMap.size()-1; ++i){
-            Q.push(Qitem(i, 0, heightMap[i][0]));
-            Q.push(Qitem(i, column-1,heightMap[i][column-1]));
+        for(int i = 0; i < raw; ++i){
+            Q.push(Qitem(i,0, heightMap[i][0]));
             mark[i][0] = 1;
+            Q.push(Qitem(i,column-1, heightMap[i][column-1]));
             mark[i][column-1] = 1;
         }
-        const int dx[4] = {-1, 0, 1, 0};
-        const int dy[4] = { 0, 1, 0,-1};
+        for(int j = 1; j < column; ++j){
+            Q.push(Qitem(0,j,heightMap[0][j]));
+            mark[0][j] = 1;
+            Q.push(Qitem(raw-1, j, heightMap[raw-1][j]));
+            mark[raw-1][j] = 1;
+        }
+
+        const int dx[] = {-1, 0, 1, 0};
+        const int dy[] = {0, -1, 0, 1};
         int result = 0;
         while(!Q.empty()){
             int x = Q.top().x;
@@ -59,16 +60,14 @@ public:
             for(int j = 0; j < 4; ++j){
                 int new_x = x + dx[j];
                 int new_y = y + dy[j];
-                if(new_x < 0 || new_x >= raw || new_y < 0 || new_y >= column || mark[new_x][new_y]){
+                if(new_x < 0 || new_x >= raw || new_y < 0 || new_y >= column || mark[new_x][new_y])
                     continue;
-                }
-                cout << "h: " << h << "  heightMap[new_x][new_y]： " << heightMap[new_x][new_y] << endl;
                 if(h > heightMap[new_x][new_y]){
                     result += h - heightMap[new_x][new_y];
                     heightMap[new_x][new_y] = h;
                 }
-                mark[new_x][new_y] = 1;
                 Q.push(Qitem(new_x, new_y, heightMap[new_x][new_y]));
+                mark[new_x][new_y] = 1;
             }
         }
         return result;

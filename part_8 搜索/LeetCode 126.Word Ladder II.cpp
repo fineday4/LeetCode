@@ -29,13 +29,6 @@ public:
         vector<vector<string>> res;
         map<string, vector<string>> graph;
         construct_graph(beginWord, wordList, graph);
-        // for(auto i : graph){
-        //     cout << "word: " << i.first << endl;
-        //     for(auto j : i.second){
-        //         cout << " " << j ;
-        //     }
-        //     cout << endl;
-        // }
         BFS(beginWord, endWord, graph, res);
         return res;
     }
@@ -66,45 +59,41 @@ private:
     
     void BFS(const string &beginWord, const string &endWord, map<string, vector<string>> &graph, vector<vector<string>> &res){
         vector<Item> Q;
-        int front = 0;
-        int min_step = 0;
         map<string, int> visited;
+        int min_step = 0;
         Q.push_back(Item(beginWord, -1, 1));
         visited.insert(make_pair(beginWord, 1));
+        int front = 0;
         while(front < Q.size()){
-            Item ite = Q[front];
-            if(ite.word != endWord) 
-                for(auto i : graph[ite.word]){
-                    cout << "ite.word: " << ite.word << "--->i: " << i << endl;
-                    if(min_step == 0 && i == endWord){
-                        min_step = ite.step+1; 
-                        visited[i] = ite.step + 1;
-                        Q.push_back(Item(i, front, ite.step + 1));
-                        // ++front;                 
-                        break;
-                    }else if(i == endWord && min_step < ite.step + 1){
-                        continue;
-                    }
-                    if(visited.find(i) == visited.end()|| visited[i] >= ite.step + 1){
-                        visited[i] = ite.step + 1;
-                        Q.push_back(Item(i, front, ite.step + 1));
+            Item word_item = Q[front];
+            if(word_item.word != endWord)
+                for(auto i : graph[word_item.word]){
+                    if(i == endWord){
+                        if(min_step == 0 || min_step >= word_item.step + 1){
+                            min_step = word_item.step + 1;
+                            Q.push_back(Item(i, front, word_item.step + 1));
+                        }
+                    }else{
+                        if(visited.find(i) == visited.end() || visited[i] >= word_item.step+1){
+                            Q.push_back(Item(i, front, word_item.step + 1));
+                            visited[i] = word_item.step + 1;
+                        }
                     }
                 }
             ++front;
         }
-        cout << "size of Q: " << Q.size() << endl;
-        for(int i = Q.size()-1; i > 0; --i){
-            cout << "Q.word: " << Q[i].word << endl;
+        vector<string> tmp;
+        for(int i = Q.size()-1; i >= 0; --i){
             if(Q[i].word != endWord)
                 continue;
-            vector<string> tmp;
-            for(int j = i; j >= 0;){
+            int j = i;
+            while(j >= 0){
                 tmp.push_back(Q[j].word);
                 j = Q[j].parent_idx;
-                cout << "j: " << j << endl;
             }
             reverse(tmp.begin(), tmp.end());
             res.push_back(tmp);
+            tmp.clear();
         }
     }
 };
@@ -112,9 +101,9 @@ private:
 int main()
 {
     Solution sol;
-    string beginWord("teach");
-    string endWord("place");
-    vector<string> wordList{"peale","wilts","place","fetch","purer","pooch","peace","poach","berra","teach","rheum","peach"};
+    string beginWord("hit");
+    string endWord("cog");
+    vector<string> wordList{"hot", "dot", "dog", "lot", "log", "cog"};
     vector<vector<string>> res = sol.findLadders(beginWord, endWord, wordList);
     for(auto i : res){
         cout << "solve: " << endl;
