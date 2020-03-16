@@ -8,25 +8,25 @@
 #define TRIE_MAX_CHAR_NUM 26
 
 struct TrieNode{
-	TrieNode *child[TRIE_MAX_CHAR_NUM];
+	TrieNode* child[TRIE_MAX_CHAR_NUM];
 	bool is_end;
-	TrieNode() : is_end(false){
-		for (int i = 0; i < TRIE_MAX_CHAR_NUM; i++){
-			child[i] = 0;
-		}
+	TrieNode():is_end(false){
+		for(int i = 0; i < TRIE_MAX_CHAR_NUM; ++i)
+			child[i] = 0;				//!这一步一定要的，因为child的元素是指针，在使用前必须要先初始化才可以，不然if判断是不可用的
 	}
 };
 
 void get_all_word_from_trie(TrieNode *node, std::string &word,
 				   std::vector<std::string> &word_list){
-	for (int i = 0; i < TRIE_MAX_CHAR_NUM; i++){
-		if (node->child[i]){
-			word.push_back(i + 'a');
-			if (node->child[i]->is_end){
+	if(!node)
+		return;
+	for(int i = 0; i < TRIE_MAX_CHAR_NUM; ++i){
+		if(node->child[i]){
+			word.push_back(i+'a');
+			if(node->child[i]->is_end)
 				word_list.push_back(word);
-			}
 			get_all_word_from_trie(node->child[i], word, word_list);
-			word.erase(word.length()-1, 1);
+			word.pop_back();
 		}
 	}
 }
