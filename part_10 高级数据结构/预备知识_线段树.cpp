@@ -5,14 +5,14 @@
 void build_segment_tree(std::vector<int> &value,
 			std::vector<int> &nums,
 		 	int pos, int left, int right){
-	if (left == right){
-		value[pos] = nums[left];
-		return;
-	}
-	int mid = (left + right) / 2;
-	build_segment_tree(value, nums, pos * 2 + 1, left, mid);
-	build_segment_tree(value, nums, pos * 2 + 2, mid + 1, right);
-	value[pos] = value[pos * 2 + 1] + value[pos * 2 + 2];
+				 if(left == right){
+					 value[pos] = nums[left];
+					 return;
+				 }
+				 int mid = (left + right)/2;
+				 build_segment_tree(value, nums, 2*pos + 1, left, mid);
+				 build_segment_tree(value, nums, 2*pos + 2, mid+1, right);
+				 value[pos] = value[2*pos + 1] + value[2*pos + 2];
 }
 
 void print_segment_tree(std::vector<int> &value,
@@ -31,37 +31,30 @@ void print_segment_tree(std::vector<int> &value,
 
 int sum_range_segment_tree(std::vector<int> &value,
 						   int pos, int left, int right,
-						   int qleft, int qright){
-	if (qleft > right || qright < left){
-		return 0;
-	}
-	if (qleft <= left && qright >= right){
-		return value[pos];
-	}
-	int mid = (left + right) / 2;
-	return sum_range_segment_tree(value, pos * 2 + 1, 
-						left, mid, qleft, qright) +
-	sum_range_segment_tree(value, pos * 2 + 2, mid + 1,
-						right, qleft, qright);
+						   int qleft, int qright){    //* qleft待查询的左区间
+						   if(qleft > right || qright < left)
+						   		return 0;
+						   if(qleft <= left && qright >= right)
+								return value[pos];
+						   int mid = (left + right)/2;
+						   return sum_range_segment_tree(value, 2*pos + 1, left, mid, qleft, qright) + 
+						   sum_range_segment_tree(value, 2*pos + 2, mid+1, right, qleft, qright);
 }
 
 void update_segment_tree(std::vector<int> &value,
 						 int pos, int left, int right,
 						 int index, int new_value){
-	if (left == right && left == index){
-		value[pos] = new_value;
-		return;
-	}
-	int mid = (left + right) / 2;
-	if (index <= mid){
-		update_segment_tree(value, pos * 2 + 1,
-						left, mid, index, new_value);
-	}
-	else{
-		update_segment_tree(value, pos * 2 + 2, mid + 1,
-						right, index, new_value);
-	}
-	value[pos] = value[pos * 2 + 1] + value[pos * 2 + 2];
+							 if(left == right && left == index){
+								 value[pos] = new_value;
+								 return;
+							 }
+							 int mid = (left+right)/2;
+							 if(index <= mid){
+								 update_segment_tree(value, 2*pos+1, left, mid,index, new_value);
+							 }else{
+								 update_segment_tree(value, 2*pos+2, mid+1, right,index, new_value);
+							 }
+							 value[pos] = value[2*pos+1] + value[2*pos+2];
 }
 
 int main(){

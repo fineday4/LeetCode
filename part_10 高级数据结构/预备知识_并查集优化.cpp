@@ -11,7 +11,7 @@ public:
 		}
 		_count = n;
 	}
-	int find(int p){
+	int find(int p){ //! find操作的作用：找到当前元素所在集合的根节点，并返回
 		while(p != _id[p]){
 			_id[p] = _id[_id[p]];
 			p = _id[p];
@@ -21,26 +21,24 @@ public:
 	void union_(int p, int q){
 		int i = find(p);
 		int j = find(q);
-		if (i == j){
-			return;
-		}
-		if (_size[i] < _size[j]){
+		if(i == j)
+			return ;
+		if(_size[i] < _size[j]){
 			_id[i] = j;
 			_size[j] += _size[i];
-		}
-		else{
+		}else{
 			_id[j] = i;
 			_size[i] += _size[j];
 		}
-		_count--;
+		_count--;//*集合的数量
 	}
 	void print_set(){
-		printf("Ԫ��: ");
+		printf("Ԫ��: ");
 		for (int i = 0; i < _id.size(); i++){
 			printf("%d ", i);
 		}
 		printf("\n");
-		printf("����: ");
+		printf("����: ");
 		for (int i = 0; i < _id.size(); i++){
 			printf("%d ", _id[i]);
 		}

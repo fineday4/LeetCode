@@ -20,7 +20,7 @@ public:
 	TrieTree(){
 	}
 	~TrieTree(){
-		for (int i = 0; i < _node_vec.size(); i++){
+		for (int i = 0; i < _node_vec.size(); i++){ 
 			delete _node_vec[i];
 		}
 	}
@@ -69,7 +69,7 @@ private:
 		_node_vec.push_back(node);
 		return node;
 	}
-	std::vector<TrieNode *> _node_vec;
+	std::vector<TrieNode *> _node_vec;  //! _node_vec的作用就是记录所有new出来的TrieNode节点空间，便于delete
 	TrieNode _root;
 };
 
