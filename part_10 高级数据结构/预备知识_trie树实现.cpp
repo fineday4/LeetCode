@@ -1,76 +1,107 @@
 #include <stdio.h>
-
 #include <string>
 #include <vector>
+#include <iostream>
+
+using namespace std;
 
 #define TRIE_MAX_CHAR_NUM 26
 
 struct TrieNode{
 	TrieNode *child[TRIE_MAX_CHAR_NUM];
 	bool is_end;
-	TrieNode() : is_end(false){
-		for (int i = 0; i < TRIE_MAX_CHAR_NUM; i++){
-			child[i] = 0;
-		}
+	TrieNode():is_end(false){
+		for(int i = 0; i < TRIE_MAX_CHAR_NUM; ++i)
+			child[i] = NULL;
 	}
 };
 
 class TrieTree{
-public:
-	TrieTree(){
-	}
-	~TrieTree(){
-		for (int i = 0; i < _node_vec.size(); i++){ 
-			delete _node_vec[i];
+	private:
+		TrieNode root;
+		vector<TrieNode*> node_vec;
+		TrieNode* new_Node(){
+			TrieNode* ret = new TrieNode();
+			node_vec.push_back(ret);
+			return ret;
 		}
-	}
-	void insert(const char *word) {
-		TrieNode *ptr = &_root;
-        while(*word){
-        	int pos = *word - 'a';
-        	if (!ptr->child[pos]){
-	        	ptr->child[pos] = new_node();
-	        }
-	        ptr = ptr->child[pos];
-        	word++;
-        }
-        ptr->is_end = true;
-    }    
-    bool search(const char *word){
-    	TrieNode *ptr = &_root;
-        while(*word){
-        	int pos = *word - 'a';
-        	if (!ptr->child[pos]){
-	        	return false;
-	        }
-	        ptr = ptr->child[pos];
-        	word++;
-        }
-        return ptr->is_end;
-    }
-    bool startsWith(const char *prefix){
-    	TrieNode *ptr = &_root;
-        while(*prefix){
-        	int pos = *prefix - 'a';
-        	if (!ptr->child[pos]){
-	        	return false;
-	        }
-	        ptr = ptr->child[pos];
-        	prefix++;
-        }
-        return true;
-    }
-    TrieNode *root(){
-    	return &_root;
-    }
-private:
-	TrieNode *new_node(){
-		TrieNode *node = new TrieNode();
-		_node_vec.push_back(node);
-		return node;
-	}
-	std::vector<TrieNode *> _node_vec;  //! _node_vec的作用就是记录所有new出来的TrieNode节点空间，便于delete
-	TrieNode _root;
+
+	public:
+		TrieTree(){}
+
+		~TrieTree(){
+			for(int i = 0; i < node_vec.size(); ++i)
+				delete node_vec[i];
+		}
+
+		void insert(const string word){
+			TrieNode *tmp = &root;
+			for(int i = 0; i < word.size(); ++i){
+				int pos = word[i] - 'a';
+				if(!tmp->child[pos]){
+					tmp->child[pos] = new_Node();
+				}
+				tmp = tmp->child[pos];
+			}
+			tmp->is_end = true;
+		}
+
+		bool search(const string word){
+			TrieNode *tmp = &root;
+			for(int i = 0; i < word.size(); ++i){
+				int pos = word[i] - 'a';
+				if(!tmp->child[pos]){
+					return false;
+				}
+				tmp = tmp->child[pos];
+			}
+			return tmp->is_end;
+		}
+		
+		bool startsWith(const string pre){
+			TrieNode* tmp = &root;
+			for(int i = 0; i < pre.size(); ++i){
+				int pos = pre[i] - 'a';
+				if(!tmp->child[pos])
+					return false;
+				tmp = tmp->child[pos];
+			}
+			return true;
+		}
+
+		void preorder_trie(TrieNode *node){
+			if(node->is_end){
+				return;
+			}
+			for(int i = 0; i < TRIE_MAX_CHAR_NUM; ++i){
+				if(node->child[i]){
+					char ch = 'a' + i;
+					cout << "-- " << ch << endl;
+					preorder_trie(node->child[i]);
+				}
+			}
+		}
+		
+		TrieNode* getRoot(){
+			return &root;
+		}
+
+		void get_all_word_from_trie(vector<string> &OUT_strings, string &IN_word, TrieNode* tmp){
+			if(!tmp){
+				return ;
+			}
+			if(tmp->is_end)
+				OUT_strings.push_back(IN_word);
+				
+			for(int i = 0; i < TRIE_MAX_CHAR_NUM; ++i){
+				if(tmp->child[i]){
+					IN_word.push_back('a' + i);
+					get_all_word_from_trie(OUT_strings, IN_word, tmp->child[i]);
+					IN_word.erase(IN_word.size()-1,1);
+				}
+			}
+
+		}
 };
 
 void preorder_trie(TrieNode *node, int layer){
@@ -112,15 +143,18 @@ int main(){
 	trie_tree.insert("bcd");
 	trie_tree.insert("efg");
 	printf("preorder_trie:\n");
-	preorder_trie(trie_tree.root(), 0);
+	preorder_trie(trie_tree.getRoot(), 0);
 	printf("\n");	
 	std::vector<std::string> word_list;
 	std::string word;
 	printf("All words:\n");
-	get_all_word_from_trie(trie_tree.root(), word, word_list);
+	//get_all_word_from_trie(trie_tree.getRoot(), word, word_list);
+	trie_tree.get_all_word_from_trie(word_list, word, trie_tree.getRoot());
+	cout << "get_all_word_from_trie" << endl;
 	for (int i = 0; i < word_list.size(); i++){
 		printf("%s\n", word_list[i].c_str());
 	}
+	cout << "------------------" << endl;
 	printf("\n");
 	printf("Search:\n");
 	printf("abc : %d\n", trie_tree.search("abc"));
